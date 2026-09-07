@@ -4,7 +4,7 @@ Pipeline de Engenharia de Dados desenvolvido em Python e Pandas com foco em **Pr
 
 ---
 
-## 📐 Arquitetura do Projetos
+## 📐 Arquitetura do Projeto
 
 ```text
 pipeline_cafe/
@@ -15,34 +15,33 @@ pipeline_cafe/
 ├── main.py                    # Script principal de orquestração do pipeline
 ├── requirements.txt           # Dependências do projeto
 └── README.md                  # Documentação do projeto
+```
 
 ## 🛠️ Recursos e Funcionalidades
-
 A classe Dados encapsula todas as etapas do ciclo de vida dos dados:
 
-Extração / Leitura Flexível (Extract):
+1. Extração / Leitura Flexível (Extract):
 
 Suporte nativo para leitura de arquivos CSV, JSON e estruturas em memória (list).
 
 Encapsulamento de atributos de estado do DataFrame (__df).
 
-Transformação (Transform):
+2. Transformação (Transform):
+  * Mapeamento e Tradução: Renomeação de colunas e tradução de valores em inglês (In-store, Takeaway, nomes de itens) para PT-BR.
+  
+  * Limpeza de Ruídos: Identificação e conversão de textos inválidos (ERROR, UNKNOWN, n/a) para valores nulos padrão do Pandas (pd.NA).
+  
+  * Tratamento de Tipos (Type Casting): Conversão de tipos de dados usando tipos nullable do Pandas (Int64, Float64, string, datetime64[ns]).
+  
+  * Desduplicação: Identificação e remoção de registros duplicados com base na chave primária (Cod_Transacao).
+  
+  * Padronização Visual: Sanitização de strings removendo espaços extras (strip) e ajustando caixa de texto (upper).
+  
+  * Métricas Derivadas: Agrupamento e agregação de vendas por produto.
 
-Mapeamento e Tradução: Renomeação de colunas e tradução de valores em inglês (In-store, Takeaway, nomes de itens) para PT-BR.
+3. Carga (Load):
 
-Limpeza de Ruídos: Identificação e conversão de textos inválidos (ERROR, UNKNOWN, n/a) para valores nulos padrão do Pandas (pd.NA).
-
-Tratamento de Tipos (Type Casting): Conversão de tipos de dados usando tipos nullable do Pandas (Int64, Float64, string, datetime64[ns]).
-
-Desduplicação: Identificação e remoção de registros duplicados com base na chave primária (Cod_Transacao).
-
-Padronização Visual: Sanitização de strings removendo espaços extras (strip) e ajustando caixa de texto (upper).
-
-Métricas Derivadas: Agrupamento e agregação de vendas por produto.
-
-Carga (Load):
-
-Exportação dos dados tratados para diretório de saída com formatação adequada de enconding e datas (%d/%m/%Y).
+Exportação dos dados tratados para diretório de saída com formatação adequada de encoding e datas (%d/%m/%Y).
 
 ## 🚀 Como Executar o Projeto
 Pré-requisitos
@@ -53,17 +52,18 @@ Git instalado
 1. Clonar o repositório
 
 ```bash
-git clone [https://github.com/SEU-USUARIO/NOME-DO-REPOSITORIO.git](https://github.com/SEU-USUARIO/NOME-DO-REPOSITORIO.git)
-cd NOME-DO-REPOSITORIO
+git clone https://github.com/souza-anacarolina/coffee-sales-etl-pipeline.git
+cd coffee-sales-etl-pipeline
 ```
 
 2. Criar e ativar o ambiente virtual
 
-```bash`
-python3 -m venv .venv
-source .venv/bin/activate   # Linux/macOS
-# .venv\Scripts\activate   # Windows
+```bash
+python3 -m venv venv
+source venv/bin/activate   # Linux/macOS
+# venv\Scripts\activate   # Windows
 ```
+
 3. Instalar as dependências
 
 ```bash
@@ -74,6 +74,7 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
+
 ## 🧰 Tecnologias Utilizadas
 Linguagem: Python
 
@@ -83,3 +84,11 @@ Paradigmas: Programação Orientada a Objetos (POO) e ETL
 
 Ambiente de Desenvolvimento: WSL (Ubuntu) / VS Code
 
+---
+
+## 📌 Fonte dos Dados
+
+O conjunto de dados brutos utilizado neste projeto foi obtido na plataforma **[Kaggle]([https://www.kaggle.com/](https://www.kaggle.com/api/v1/datasets/download/ahmedmohamed2003/cafe-sales-dirty-data-for-cleaning-training)**. 
+
+* **Dataset Original:** Vendas de Cafeteria (*Cafe Sales - Dirty Data for Cleaning Training*)
+* **Propósito:** O conjunto foi utilizado como base para simulação de um cenário real de Engenharia de Dados, contendo inconformidades deliberadas como datas fora do padrão, termos em inglês, ruídos textuais (`ERROR`, `UNKNOWN`) e registros duplicados.
