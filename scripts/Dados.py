@@ -42,7 +42,7 @@ class Dados:
             return pd.DataFrame(json.load(file))
 
     def __leitura_csv(self):
-        return pd.read_csv(self.__path)
+        return pd.read_csv(self.__path,encoding='utf-8')
 
     def __leitura_lista(self):
         if not isinstance(self.__path, list):
@@ -164,7 +164,7 @@ class Dados:
         Salva o DataFrame em um arquivo CSV.
         """
 
-        self.__df.to_csv(path,index=False,encoding='utf-8',date_format='%d/%m/%Y')
+        self.__df.to_csv(path,index=False,encoding='utf-8-sig',date_format='%d/%m/%Y')
 
     # =========================================================
     # TRATAMENTO DE VALORES AUSENTES
