@@ -131,9 +131,9 @@ print("\nArquivo separado por ponto e vírgula gerado com sucesso em:",path_dado
 
 largura = 57
 
-print(f"{'='*largura}")
+print(f"{'*'*largura}")
 print(f"{'Métricas de Negócio':^{largura}}")
-print(f"{'='*largura}")
+print(f"{'*'*largura}")
 
 
 # Imprime as quantidades vendidas agrupado por produto.
