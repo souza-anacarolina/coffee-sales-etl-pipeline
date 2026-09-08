@@ -159,12 +159,20 @@ class Dados:
     # SALVAMENTO
     # =========================================================
 
-    def salvando_dados(self, path):
+    def salvando_dados_virgula(self, path):
         """
-        Salva o DataFrame em um arquivo CSV.
+        Salva o DataFrame em um arquivo CSV em que os dados são separados por vírgula.
         """
 
         self.__df.to_csv(path,index=False,encoding='utf-8-sig',date_format='%d/%m/%Y')
+
+
+    def salvando_dados_ponto_virgula(self, path):
+        """
+         Salva o DataFrame em um arquivo CSV em que os dados são separados por ponto e vírgula.
+        """
+
+        self.__df.to_csv(path,index=False,encoding='utf-8-sig',sep=';',date_format='%d/%m/%Y')
 
     # =========================================================
     # TRATAMENTO DE VALORES AUSENTES
