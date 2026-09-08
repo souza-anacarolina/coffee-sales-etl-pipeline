@@ -10,7 +10,9 @@ Pipeline de Engenharia de Dados desenvolvido em Python e Pandas com foco em **Pr
 pipeline_cafe/
 │
 ├── data_raw/                  # Dados brutos de entrada (dirty_cafe_sales.csv)
-├── data_processed/            # Dados limpos e transformados (dados_transformados.csv)
+├── data_processed/            # Dados limpos e exportados
+│   ├── dados_transformados_virgula.csv
+│   └── dados_transformados_ponto_e_virgula.csv
 ├── Dados.py                   # Classe principal (POO) com métodos de ETL
 ├── main.py                    # Script principal de orquestração do pipeline
 ├── requirements.txt           # Dependências do projeto
@@ -20,28 +22,28 @@ pipeline_cafe/
 ## 🛠️ Recursos e Funcionalidades
 A classe Dados encapsula todas as etapas do ciclo de vida dos dados:
 
-1. Extração / Leitura Flexível (Extract):
+1. **Extração / Leitura Flexível (`Extract`)**:
 
 Suporte nativo para leitura de arquivos CSV, JSON e estruturas em memória (list).
 
 Encapsulamento de atributos de estado do DataFrame (__df).
 
-2. Transformação (Transform):
-  * Mapeamento e Tradução: Renomeação de colunas e tradução de valores em inglês (In-store, Takeaway, nomes de itens) para PT-BR.
+2. **Transformação (`Transform`)**:
+  * **Mapeamento e Tradução:** Renomeação de colunas e tradução de valores em inglês (In-store, Takeaway, nomes de itens) para PT-BR.
   
-  * Limpeza de Ruídos: Identificação e conversão de textos inválidos (ERROR, UNKNOWN, n/a) para valores nulos padrão do Pandas (pd.NA).
+  * **Limpeza de Ruídos:** Identificação e conversão de textos inválidos (ERROR, UNKNOWN, n/a) para valores nulos padrão do Pandas (pd.NA).
   
-  * Tratamento de Tipos (Type Casting): Conversão de tipos de dados usando tipos nullable do Pandas (Int64, Float64, string, datetime64[ns]).
+  * **Tratamento de Tipos (Type Casting):** Conversão de tipos de dados usando tipos nullable do Pandas (Int64, Float64, string, datetime64[ns]).
   
-  * Desduplicação: Identificação e remoção de registros duplicados com base na chave primária (Cod_Transacao).
+  * **Desduplicação:** Identificação e remoção de registros duplicados com base na chave primária (Cod_Transacao).
   
-  * Padronização Visual: Sanitização de strings removendo espaços extras (strip) e ajustando caixa de texto (upper).
+  * **Padronização Visual:** Sanitização de strings removendo espaços extras (strip) e ajustando caixa de texto (upper).
   
-  * Métricas Derivadas: Agrupamento e agregação de vendas por produto.
+  * **Métricas Derivadas:** Agrupamento e agregação de vendas por produto.
 
-3. Carga (Load):
-
-Exportação dos dados tratados para diretório de saída com formatação adequada de encoding e datas (%d/%m/%Y).
+3. **Carga (`Load`):**
+   * **Exportação Multiformato:** Métodos dedicados para geração de arquivos CSV separados por vírgula (`.salvando_dados_virgula`) e por ponto e vírgula (`.salvando_dados_ponto_virgula`).
+   * **Compatibilidade Regional:** Suporte ao encoding `utf-8-sig` (ideal para abertura direta no Microsoft Excel), formatação de precisão decimal (`%.2f`), vírgula como separador decimal e padronização de datas (`%d/%m/%Y`).
 
 ## 🚀 Como Executar o Projeto
 Pré-requisitos
