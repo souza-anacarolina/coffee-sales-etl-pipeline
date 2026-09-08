@@ -138,22 +138,16 @@ class Dados:
 
     def valores_agrupados(self):
         """
-        Cria uma coluna temporária chamada Valor Total Linha
-        Agrupa por produto e soma a Quantidade e o Valor Total
-        Remove a coluna temporária do DataFrame
-        Renomeia a coluna final para Valor Total
+        Retorna o valor total e a quantidade agrupados por produto
         """
 
-        self.__df['Valor Total Linha'] = self.__df['Quantidade'] * self.__df['Preço Unitário']
-        
         resultado = self.__df.groupby('Produto').agg({'Quantidade': 'sum',
-            'Valor Total Linha': 'sum'}).reset_index()
+                                                      'Valor Total':'sum'})
+
+        resultado = resultado.rename(columns={'Valor Total': 'Valor Total'})
+
         
-        self.__df.drop(columns=['Valor Total Linha'], inplace=True)
-        
-        resultado.rename(columns={'Valor Total Linha': 'Valor Total'}, inplace=True)
-        
-        return resultado
+        return resultado.reset_index()
 
     def faturamento_por_forma_de_pagamento(self):
         """
