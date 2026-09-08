@@ -155,6 +155,18 @@ class Dados:
         
         return resultado
 
+    def faturamento_por_forma_de_pagamento(self):
+        """
+        Retorna o total gasto e a quantidade de transações separados por forma de pagamento
+        """
+
+        resultado = self.__df.groupby('Forma de Pagamento').agg({'Valor Total' : 'sum',
+                                                                'Cod_Transacao': 'count' })
+
+        resultado = resultado.rename(columns={'Valor Total': 'Faturamento Total', 'Cod_Transacao': 'Quantidade de Transações'})
+
+        return resultado.reset_index()
+
     # =========================================================
     # SALVAMENTO
     # =========================================================
