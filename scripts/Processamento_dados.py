@@ -107,6 +107,10 @@ print('\nRegistros com Cod_Transacao duplicados excluídos!')
 dados_compras.standardize_text()
 print('\nDados padronizados!')
 
+# Ajustando o cálculo da coluna Valor Total
+dados_compras.tratamento_nulos_valor_total()
+print('\nProdutos com valor total nulo tratados!')
+
 #3. LOAD
 
 # Local em que o arquivo tratado deve ser salvo
