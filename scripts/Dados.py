@@ -207,18 +207,16 @@ class Dados:
 
         return self.__df.isna().sum()
 
-    def tratamento_nulos(self):
+    def tratamento_nulos_valor_total(self):
         """
-        Preenche valores nulos com valores padrão.
+        Em dados com nulo na coluna Valor Total realiza o cálculo de quantidade * preço unitário
         """
 
-        valores_padrao = {
-            'Cod_Transacao': 'NÃO INFORMADO',
-            'Produto': 'NÃO INFORMADO',
-            'Quantidade': 0,
-            'Preço Unitário': 0.0,
-            'Valor Total': 0.0,
-            'Forma de Pagamento': 'NÃO INFORMADO',
-            'Tipo de Consumo': 'NÃO INFORMADO'
-        }
-        self.__df.fillna(value=valores_padrao,inplace=True)
+        quantidade = self.__df['Quantidade'].fillna(0)
+        preco_unitario = self.__df['Preço Unitário'].fillna(0)
+        nulo = self.__df['Valor Total'].isna()
+
+        calculo = quantidade * preco_unitario
+
+        self.__df.loc[nulo,'Valor Total'] = calculo
+
