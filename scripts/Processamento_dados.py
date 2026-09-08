@@ -107,11 +107,6 @@ print('\nRegistros com Cod_Transacao duplicados excluídos!')
 dados_compras.standardize_text()
 print('\nDados padronizados!')
 
-# Imprime as quantidades vendidas agrupado por produto.
-dados_compras.valores_agrupados()
-
-print(dados_compras.valores_agrupados())
-
 #3. LOAD
 
 # Local em que o arquivo tratado deve ser salvo
@@ -125,6 +120,21 @@ print("\nArquivo separado por vírgula gerado com sucesso em:",path_dados_transf
 path_dados_transformados = 'data_processed/dados_transformados_ponto_e_virgula.csv'
 
 dados_compras.salvando_dados_ponto_virgula(path_dados_transformados)
-print("\nArquivo separado por ponto e vírgula gerado com sucesso em:",path_dados_transformados)
+print("\nArquivo separado por ponto e vírgula gerado com sucesso em:",path_dados_transformados,'\n')
 
 
+#4. MÉTRICAS
+
+largura = 57
+
+print(f"{'='*largura}")
+print(f"{'Métricas de Negócio':^{largura}}")
+print(f"{'='*largura}")
+
+
+# Imprime as quantidades vendidas agrupado por produto.
+print(f"\n{' QUANTIDADES VENDIDAS AGRUPADO POR PRODUTO ':=^57}")
+print(dados_compras.valores_agrupados())
+
+print(f"\n{' FATURAMENTO TOTAL POR FORMA DE PAGAMENTO ':=^57}")
+print(dados_compras.faturamento_por_forma_de_pagamento())
