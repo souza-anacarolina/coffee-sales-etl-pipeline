@@ -115,11 +115,16 @@ print(dados_compras.valores_agrupados())
 #3. LOAD
 
 # Local em que o arquivo tratado deve ser salvo
-path_dados_transformados = 'data_processed/dados_transformados.csv'
+path_dados_transformados = 'data_processed/dados_transformados_virgula.csv'
 
 # Utilizando a função de salvamento de dados e imprimindo o arquivo salvo
-dados_compras.salvando_dados(path_dados_transformados)
-print("\nArquivo gerado com sucesso em:",path_dados_transformados)
+dados_compras.salvando_dados_virgula(path_dados_transformados)
+print("\nArquivo separado por vírgula gerado com sucesso em:",path_dados_transformados)
 
+
+path_dados_transformados = 'data_processed/dados_transformados_ponto_e_virgula.csv'
+
+dados_compras.salvando_dados_ponto_virgula(path_dados_transformados)
+print("\nArquivo separado por ponto e vírgula gerado com sucesso em:",path_dados_transformados)
 
 
