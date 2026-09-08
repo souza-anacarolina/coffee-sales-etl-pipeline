@@ -161,6 +161,17 @@ class Dados:
 
         return resultado.reset_index()
 
+    def ticket_medio(self):
+        """
+        Retorna o valor médio gasto por venda
+        """
+
+        valor_total = self.__df['Valor Total'].sum()
+
+        total_transacoes = self.__df['Cod_Transacao'].nunique()
+
+        return valor_total / total_transacoes
+
     # =========================================================
     # SALVAMENTO
     # =========================================================
