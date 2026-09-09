@@ -97,7 +97,7 @@ class Dados:
             Retorna a data no formato original
             """
     
-            return self.__df[target_column].head(5)
+            return self.__df[target_column].head(5).to_string()
 
     def format_dates(self, target_column):
         """
@@ -184,6 +184,28 @@ class Dados:
 
         return resultado.reset_index()
 
+    def analise_temporal_de_vendas(self):
+
+        self.__df['Data da Transação'] = pd.to_datetime(self.__df['Data da Transação'])
+
+        dias = {
+            'Monday': 'Segunda-feira',
+            'Tuesday': 'Terça-feira',
+            'Wednesday': 'Quarta-feira',
+            'Thursday': 'Quinta-feira',
+            'Friday': 'Sexta-feira',
+            'Saturday': 'Sábado',
+            'Sunday': 'Domingo'
+        }
+
+        ordem_dias = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo']
+
+        resultado = self.__df.groupby(self.__df['Data da Transação'].dt.day_name().map(dias))['Valor Total'].sum()
+
+        resultado.index = pd.Categorical(resultado.index,categories=ordem_dias,ordered=True)
+
+        return resultado.sort_index().to_string()
+
     # =========================================================
     # SALVAMENTO
     # =========================================================
@@ -228,7 +250,7 @@ class Dados:
         Retorna a quantidade de valores nulos por coluna.
         """
 
-        return self.__df.isna().sum()
+        return self.__df.isna().sum().to_string()
 
     def tratamento_nulos_valor_total(self):
         """

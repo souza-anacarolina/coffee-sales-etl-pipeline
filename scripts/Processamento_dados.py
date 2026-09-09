@@ -148,3 +148,6 @@ print(dados_compras.ticket_medio())
 
 print(f"\n{' FATURAMENTO TOTAL POR TIPO DE CONSUMO ':=^57}")
 print(dados_compras.faturamento_por_tipo_de_consumo())
+
+print(f"\n{' ANÁLISE TEMPORAL DE VENDAS ':=^57}")
+print(dados_compras.analise_temporal_de_vendas())
