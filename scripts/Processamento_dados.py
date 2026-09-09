@@ -143,5 +143,8 @@ print(dados_compras.valores_agrupados())
 print(f"\n{' FATURAMENTO TOTAL POR FORMA DE PAGAMENTO ':=^57}")
 print(dados_compras.faturamento_por_forma_de_pagamento())
 
-print(f"\n{' TICKET MÉDIO ':=^57}")
+print(f"\n{' TICKET MÉDIO POR TRANSAÇÃO ':=^57}")
 print(dados_compras.ticket_medio())
+
+print(f"\n{' FATURAMENTO TOTAL POR TIPO DE CONSUMO ':=^57}")
+print(dados_compras.faturamento_por_tipo_de_consumo())

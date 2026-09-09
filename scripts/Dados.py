@@ -172,6 +172,18 @@ class Dados:
 
         return valor_total / total_transacoes
 
+    def faturamento_por_tipo_de_consumo(self):
+        """
+        Retorna a proporção do faturamento entre os tipos de consumo
+        """
+
+        resultado = self.__df.groupby('Tipo de Consumo').agg({'Valor Total': 'sum',
+                                                              'Cod_Transacao': 'count'})
+
+        resultado = resultado.rename(columns={'Faturamento Total':'Faturamento Total', 'Cod_Transacao': 'Quantidade de Transações'})
+
+        return resultado.reset_index()
+
     # =========================================================
     # SALVAMENTO
     # =========================================================
