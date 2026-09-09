@@ -3,7 +3,6 @@ import json
 from datetime import datetime
 import pandas as pd
 
-
 class Dados:
 
     def __init__(self, path, tipo_dados):
@@ -14,6 +13,7 @@ class Dados:
     # =========================================================
     # PROPRIEDADES DE ACESSO
     # =========================================================
+
 
     @property
     def dados(self):
