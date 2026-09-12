@@ -196,7 +196,9 @@ class Dados:
 
         total_transacoes = self.__df['Cod_Transacao'].nunique()
 
-        return round(valor_total / total_transacoes,2)
+        media = valor_total / total_transacoes
+
+        return f"R$ {media:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
     def total_transacoes(self):
         """
