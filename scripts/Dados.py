@@ -68,6 +68,13 @@ class Dados:
         else:
             raise ValueError(f'Tipo de arquivo não suportado: {self.__tipo_dados}')
 
+    def qtde_registros(self):
+        """
+        Retorna a quanttidade de registros carregados
+        """
+
+        print(f"\nDados carregados: {len(self.__df)} registros")
+
     # =========================================================
     # TRANSFORMAÇÃO DOS DADOS
     # =========================================================
