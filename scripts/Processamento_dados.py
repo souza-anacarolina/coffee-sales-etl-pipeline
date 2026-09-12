@@ -49,14 +49,14 @@ print('\nRenomeação de nomes das colunas realizado!')
 print('\nNomes atualizados das colunas: ',dados_compras.nomes_colunas)
 
 # Imprime a data original dos dados
-print('\nPadrão das datas:',dados_compras.retorna_informacao('Data da Transação'))
+print('\nPadrão das datas:',dados_compras.retorna_data_original('Data da Transação'))
 
 # Converte a data da transação para o padrão brasileiro
 dados_compras.format_dates('Data da Transação')
 print('\nDatas formatadas para o padrão brasileiro!')
 
 # Imprime as datas formatadas
-print('\nNovo padrão das datas:',dados_compras.retorna_informacao('Data da Transação'))
+print('\nNovo padrão das datas:',dados_compras.retorna_data_formatada('Data da Transação'))
 
 #Retorna as informações da planilha com os dados originais
 print('\nInformações originais:\n',dados_compras.dados)

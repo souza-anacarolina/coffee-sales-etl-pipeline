@@ -92,16 +92,23 @@ class Dados:
             """
             self.__df = self.__df.astype(cast_mapping)
 
-    def retorna_informacao(self, target_column):
+    def retorna_data_formatada(self, target_column):
             """
-            Retorna a data no formato original
+            Retorna a data formatada para o padrão brasileiro.
             """
     
-            return self.__df[target_column].head(5).to_string()
+            return self.__df[target_column].head(5).dt.strftime('%d/%m/%Y').to_string()
+
+    def retorna_data_original(self, target_column):
+        """
+        Retorna a data original dos dados
+        """
+
+        return self.__df[target_column].head(5).to_string()
 
     def format_dates(self, target_column):
         """
-        Converte datas de YYYY-MM-DD para DD/MM/YYYY.
+        Converte os valores da coluna para o tipo datetime
         """
 
         self.__df[target_column] = pd.to_datetime(
