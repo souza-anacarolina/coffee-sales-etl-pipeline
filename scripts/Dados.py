@@ -169,10 +169,11 @@ class Dados:
         """
         Retorna o valor total de faturamento
         """
+        total = self.__df['Valor Total'].sum()
 
-        resultado = self.__df.agg({'Valor Total': 'sum'})
+        resultado = f'{total:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
 
-        return resultado
+        return f'R$ {resultado}'
 
     def faturamento_por_forma_de_pagamento(self):
         """
