@@ -198,6 +198,15 @@ class Dados:
 
         return round(valor_total / total_transacoes,2)
 
+    def total_transacoes(self):
+        """
+        Retorna a quantidade total de transações
+        """
+
+        resultado = self.__df['Cod_Transacao'].nunique()
+
+        return resultado
+
     def faturamento_por_tipo_de_consumo(self):
         """
         Retorna a proporção do faturamento entre os tipos de consumo
