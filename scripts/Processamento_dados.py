@@ -114,4 +114,9 @@ path_dados_transformados = 'data_processed/dados_transformados_ponto_e_virgula.c
 
 dados_compras.salvando_dados_ponto_virgula(path_dados_transformados)
 
-print('Relatórios salvos')
+print('\nPipeline executado com sucesso!')
+print('\nRelatórios salvos')
+
+print(f'\nFaturamento Total: {dados_compras.faturamento_total()}')
+print(f'Ticket médio: ')
+print(f'Quantidade de transações: ')
