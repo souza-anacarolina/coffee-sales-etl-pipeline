@@ -5,7 +5,7 @@ import pandas as pd
 
 class Dados:
 
-    
+    pd.options.display.float_format = 'R$ {:,.2f}'.format
 
     def __init__(self, path, tipo_dados):
         self.__path = path
