@@ -118,5 +118,5 @@ print('\nPipeline executado com sucesso!')
 print('\nRelatórios salvos')
 
 print(f'\nFaturamento Total: {dados_compras.faturamento_total()}')
-print(f'Ticket médio: ')
+print(f'Ticket médio: {dados_compras.ticket_medio()}')
 print(f'Quantidade de transações: ')

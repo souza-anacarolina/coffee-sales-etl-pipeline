@@ -196,7 +196,7 @@ class Dados:
 
         total_transacoes = self.__df['Cod_Transacao'].nunique()
 
-        return valor_total / total_transacoes
+        return round(valor_total / total_transacoes,2)
 
     def faturamento_por_tipo_de_consumo(self):
         """
