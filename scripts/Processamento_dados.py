@@ -37,7 +37,9 @@ value_mapping = {
     'Cash': 'Dinheiro',
     'Digital Wallet': 'Carteira Digital',
     'Juice': 'Suco',
-    'Tea': 'Chá'
+    'Tea': 'Chá',
+    'Sandwich': 'Sanduiche',
+    'Espresso': 'Expresso'
 }
 
 # Imprime os nomes das colunas originais
