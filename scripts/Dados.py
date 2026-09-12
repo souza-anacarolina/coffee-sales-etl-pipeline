@@ -5,6 +5,8 @@ import pandas as pd
 
 class Dados:
 
+    
+
     def __init__(self, path, tipo_dados):
         self.__path = path
         self.__tipo_dados = tipo_dados
@@ -162,6 +164,15 @@ class Dados:
 
         
         return resultado.reset_index()
+
+    def faturamento_total(self):
+        """
+        Retorna o valor total de faturamento
+        """
+
+        resultado = self.__df.agg({'Valor Total': 'sum'})
+
+        return resultado
 
     def faturamento_por_forma_de_pagamento(self):
         """
