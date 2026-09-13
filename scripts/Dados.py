@@ -214,39 +214,3 @@ class Dados:
         calculo = quantidade * preco_unitario
 
         self.__df.loc[nulo,'Valor Total'] = calculo
-
-    # =========================================================
-    # RETORNO DE DADOS
-    # =========================================================
-
-    def faturamento_total(self):
-        """
-        Retorna o valor total de faturamento
-        """
-        total = self.__df['Valor Total'].sum()
-
-        resultado = f'{total:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
-
-        return f'R$ {resultado}'
-
-    def ticket_medio(self):
-        """
-        Retorna o valor médio gasto por venda
-        """
-
-        valor_total = self.__df['Valor Total'].sum()
-
-        total_transacoes = self.__df['Cod_Transacao'].nunique()
-
-        media = valor_total / total_transacoes
-
-        return f"R$ {media:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-
-    def total_transacoes(self):
-        """
-        Retorna a quantidade total de transações
-        """
-
-        resultado = self.__df['Cod_Transacao'].nunique()
-
-        return resultado
