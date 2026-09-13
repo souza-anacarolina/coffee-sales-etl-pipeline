@@ -105,6 +105,17 @@ class PipelineMetricas:
 
         return resultado
 
+    def media_itens_por_transacao(self):
+        """
+        Retorna a quantidade média de produtos levados em uma única transação
+        """
+
+        produtos_por_transacao = self.__df.groupby('Cod_Transacao')['Quantidade'].sum()
+
+        resultado = int(produtos_por_transacao.mean())
+
+        return pd.DataFrame([{'Métrica': 'Média de itens por compra', 'Valor': resultado}])
+
     def obter_todas_metricas(self) -> dict:
         """
         Dicionário com o nome da métrica e o seu respectivo DataFrame.
@@ -117,7 +128,8 @@ class PipelineMetricas:
             'Ticket Médio': self.ticket_medio(),
             'Total Transações': self.total_transacoes(),
             'Faturamento Por Tipo Consumo': self.faturamento_por_tipo_de_consumo(),
-            'Análise Temporal': self.analise_temporal_de_vendas()
+            'Análise Temporal': self.analise_temporal_de_vendas(),
+            'Média de Itens por Compra': self.media_itens_por_transacao()
         }
 
     # =========================================================
