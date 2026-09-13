@@ -91,7 +91,7 @@ pipeline_metricas.exportar_pdfs_separados('data_processed/metricas_pdf')
 pipeline_metricas.exportar_csvs_separados('data_processed/metricas_csv')
 
 # Excel único com todas as métricas
-pipeline_metricas.exportar_excel_totalizador('data_processed/metricas_todas_abas.xlsx')
+pipeline_metricas.exportar_excel_totalizador('data_processed/metricas_consolidadas.xlsx')
 
 print('\nPipeline de ETL e geração de métricas finalizado com sucesso!')
 
