@@ -136,7 +136,7 @@ class Dados:
         """ 
         Remove as duplicadas mantendo a primeira ocorrência 
         """
-        return self.__df.drop_duplicates(subset=['Cod_Transacao'], inplace=True)
+        return self.__df.drop_duplicates(keep='first')
 
 
     def standardize_text(self):
