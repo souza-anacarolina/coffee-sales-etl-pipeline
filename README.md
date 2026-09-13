@@ -10,11 +10,16 @@ Pipeline de Engenharia de Dados desenvolvido em Python e Pandas com foco em **Pr
 pipeline_cafe/
 │
 ├── data_raw/                  # Dados brutos de entrada (dirty_cafe_sales.csv)
-├── data_processed/            # Dados limpos e exportados
+├── data_processed/            # Dados limpos e relatórios exportados
 │   ├── dados_transformados_virgula.csv
-│   └── dados_transformados_ponto_e_virgula.csv
-├── Dados.py                   # Classe principal (POO) com métodos de ETL
-├── main.py                    # Script principal de orquestração do pipeline
+│   ├── dados_transformados_ponto_e_virgula.csv
+│   ├── metricas_consolidadas.pdf
+│   ├── metricas_todas_abas.xlsx
+│   ├── metricas_csv/
+│   └── metricas_pdf/
+├── Dados.py                   # Classe (POO) com métodos de ETL
+├── PipelineMetricas.py        # Classe (POO) para cálculo de métricas e relatórios
+├── Processamento_dados.py                    # Script principal de orquestração do pipeline
 ├── requirements.txt           # Dependências do projeto
 └── README.md                  # Documentação do projeto
 ```
@@ -44,6 +49,7 @@ Encapsulamento de atributos de estado do DataFrame (__df).
 3. **Carga (`Load`):**
    * **Exportação Multiformato:** Métodos dedicados para geração de arquivos CSV separados por vírgula (`.salvando_dados_virgula`) e por ponto e vírgula (`.salvando_dados_ponto_virgula`).
    * **Compatibilidade Regional:** Suporte ao encoding `utf-8-sig` (ideal para abertura direta no Microsoft Excel), formatação de precisão decimal (`%.2f`), vírgula como separador decimal e padronização de datas (`%d/%m/%Y`).
+   * **Relatórios Automatizados:** Exportação das métricas consolidadas em PDF único, PDFs individuais, CSVs e arquivo Excel (.xlsx) com abas separadas por métrica.
 
 ## 🚀 Como Executar o Projeto
 Pré-requisitos
@@ -81,6 +87,8 @@ python main.py
 Linguagem: Python
 
 Manipulação de Dados: Pandas
+
+Geração de Relatórios: FPDF2, OpenPyXL
 
 Paradigmas: Programação Orientada a Objetos (POO) e ETL
 
