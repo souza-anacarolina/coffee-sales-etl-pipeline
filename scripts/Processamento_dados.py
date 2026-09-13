@@ -73,6 +73,7 @@ print('\nTransformações concluídas!')
 
 dados_compras.salvando_dados_virgula('data_processed/dados_transformados_virgula.csv')
 dados_compras.salvando_dados_ponto_virgula('data_processed/dados_transformados_ponto_e_virgula.csv')
+dados_compras.salvando_dados_json('data_processed/dados_transformados.json')
 
 # 4. GERAÇÃO DAS MÉTRICAS E RELATÓRIOS
 
