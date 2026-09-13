@@ -13,6 +13,7 @@ pipeline_cafe/
 ├── data_processed/            # Dados limpos e relatórios exportados
 │   ├── dados_transformados_virgula.csv
 │   ├── dados_transformados_ponto_e_virgula.csv
+│   ├── dados_transformados.json
 │   ├── metricas_consolidadas.pdf
 │   ├── metricas_todas_abas.xlsx
 │   ├── metricas_csv/
@@ -20,6 +21,7 @@ pipeline_cafe/
 ├── Dados.py                   # Classe (POO) com métodos de ETL
 ├── PipelineMetricas.py        # Classe (POO) para cálculo de métricas e relatórios
 ├── Processamento_dados.py                    # Script principal de orquestração do pipeline
+├── .gitignore                 # Arquivo para ignorar arquivos locais/temporários
 ├── requirements.txt           # Dependências do projeto
 └── README.md                  # Documentação do projeto
 ```
@@ -47,7 +49,7 @@ Encapsulamento de atributos de estado do DataFrame (__df).
   * **Métricas Derivadas:** Agrupamento e agregação de vendas por produto.
 
 3. **Carga (`Load`):**
-   * **Exportação Multiformato:** Métodos dedicados para geração de arquivos CSV separados por vírgula (`.salvando_dados_virgula`) e por ponto e vírgula (`.salvando_dados_ponto_virgula`).
+   * **Exportação Multiformato:** Métodos dedicados para geração de arquivos CSV separados por vírgula (`.salvando_dados_virgula`) e por ponto e vírgula (`.salvando_dados_ponto_virgula`) e exportação em formato JSON (`.salvando_dados_json`).
    * **Compatibilidade Regional:** Suporte ao encoding `utf-8-sig` (ideal para abertura direta no Microsoft Excel), formatação de precisão decimal (`%.2f`), vírgula como separador decimal e padronização de datas (`%d/%m/%Y`).
    * **Relatórios Automatizados:** Exportação das métricas consolidadas em PDF único, PDFs individuais, CSVs e arquivo Excel (.xlsx) com abas separadas por métrica.
 
@@ -80,7 +82,7 @@ pip install -r requirements.txt
 4. Executar o pipeline
 
 ```bash
-python main.py
+python Processamento_dados.py
 ```
 
 ## 🧰 Tecnologias Utilizadas
