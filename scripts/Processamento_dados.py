@@ -95,6 +95,3 @@ pipeline_metricas.exportar_excel_totalizador('data_processed/metricas_consolidad
 
 print('\nPipeline de ETL e geração de métricas finalizado com sucesso!')
 
-print(f'\nFaturamento Total: {dados_compras.faturamento_total()}')
-print(f'Ticket médio: {dados_compras.ticket_medio()}')
-print(f'Quantidade de transações: {dados_compras.total_transacoes()}')
