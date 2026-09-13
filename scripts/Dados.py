@@ -2,6 +2,7 @@ import csv
 import json
 from datetime import datetime
 import pandas as pd
+from fpdf import FPDF
 
 class Dados:
 
@@ -16,12 +17,11 @@ class Dados:
     # PROPRIEDADES DE ACESSO
     # =========================================================
 
-
     @property
     def dados(self):
         """Retorna o DataFrame."""
 
-        return self.__df.head(5)
+        return self.__df
 
     @property
     def nomes_colunas(self):
@@ -72,7 +72,7 @@ class Dados:
 
     def qtde_registros(self):
         """
-        Retorna a quanttidade de registros carregados
+        Retorna a quantidade de registros carregados
         """
 
         print(f"\nDados carregados: {len(self.__df)} registros")
@@ -106,14 +106,14 @@ class Dados:
             Retorna a data formatada para o padrão brasileiro.
             """
     
-            return self.__df[target_column].head(5).dt.strftime('%d/%m/%Y').to_string()
+            return self.__df[target_column].dt.strftime('%d/%m/%Y').to_string()
 
     def retorna_data_original(self, target_column):
         """
         Retorna a data original dos dados
         """
 
-        return self.__df[target_column].head(5).to_string()
+        return self.__df[target_column].to_string()
 
     def format_dates(self, target_column):
         """
@@ -146,102 +146,7 @@ class Dados:
         text_columns = self.__df.select_dtypes(include=['object', 'string']).columns
 
         self.__df[text_columns] = (self.__df[text_columns].apply(lambda column: column.str.strip().str.upper()))
-
-
-    # =========================================================
-    # CRIAÇÃO DE NOVAS MÉTRICAS
-    # =========================================================
-
-    def valores_agrupados(self):
-        """
-        Retorna o valor total e a quantidade agrupados por produto
-        """
-
-        resultado = self.__df.groupby('Produto').agg({'Quantidade': 'sum',
-                                                      'Valor Total':'sum'})
-
-        resultado = resultado.rename(columns={'Valor Total': 'Valor Total'})
-
-        
-        return resultado.reset_index()
-
-    def faturamento_total(self):
-        """
-        Retorna o valor total de faturamento
-        """
-        total = self.__df['Valor Total'].sum()
-
-        resultado = f'{total:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
-
-        return f'R$ {resultado}'
-
-    def faturamento_por_forma_de_pagamento(self):
-        """
-        Retorna o total gasto e a quantidade de transações separados por forma de pagamento
-        """
-
-        resultado = self.__df.groupby('Forma de Pagamento').agg({'Valor Total' : 'sum',
-                                                                'Cod_Transacao': 'count' })
-
-        resultado = resultado.rename(columns={'Valor Total': 'Faturamento Total', 'Cod_Transacao': 'Quantidade de Transações'})
-
-        return resultado.reset_index()
-
-    def ticket_medio(self):
-        """
-        Retorna o valor médio gasto por venda
-        """
-
-        valor_total = self.__df['Valor Total'].sum()
-
-        total_transacoes = self.__df['Cod_Transacao'].nunique()
-
-        media = valor_total / total_transacoes
-
-        return f"R$ {media:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-
-    def total_transacoes(self):
-        """
-        Retorna a quantidade total de transações
-        """
-
-        resultado = self.__df['Cod_Transacao'].nunique()
-
-        return resultado
-
-    def faturamento_por_tipo_de_consumo(self):
-        """
-        Retorna a proporção do faturamento entre os tipos de consumo
-        """
-
-        resultado = self.__df.groupby('Tipo de Consumo').agg({'Valor Total': 'sum',
-                                                              'Cod_Transacao': 'count'})
-
-        resultado = resultado.rename(columns={'Faturamento Total':'Faturamento Total', 'Cod_Transacao': 'Quantidade de Transações'})
-
-        return resultado.reset_index()
-
-    def analise_temporal_de_vendas(self):
-
-        self.__df['Data da Transação'] = pd.to_datetime(self.__df['Data da Transação'])
-
-        dias = {
-            'Monday': 'Segunda-feira',
-            'Tuesday': 'Terça-feira',
-            'Wednesday': 'Quarta-feira',
-            'Thursday': 'Quinta-feira',
-            'Friday': 'Sexta-feira',
-            'Saturday': 'Sábado',
-            'Sunday': 'Domingo'
-        }
-
-        ordem_dias = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo']
-
-        resultado = self.__df.groupby(self.__df['Data da Transação'].dt.day_name().map(dias))['Valor Total'].sum()
-
-        resultado.index = pd.Categorical(resultado.index,categories=ordem_dias,ordered=True)
-
-        return resultado.sort_index().to_string()
+    
 
     # =========================================================
     # SALVAMENTO
@@ -261,6 +166,7 @@ class Dados:
         """
 
         self.__df.to_csv(path,index=False,encoding='utf-8-sig',sep=';',decimal=',',float_format='%.2f',date_format='%d/%m/%Y')
+
 
     # =========================================================
     # TRATAMENTO DE VALORES AUSENTES
@@ -302,3 +208,38 @@ class Dados:
 
         self.__df.loc[nulo,'Valor Total'] = calculo
 
+    # =========================================================
+    # RETORNO DE DADOS
+    # =========================================================
+
+    def faturamento_total(self):
+        """
+        Retorna o valor total de faturamento
+        """
+        total = self.__df['Valor Total'].sum()
+
+        resultado = f'{total:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
+
+        return f'R$ {resultado}'
+
+    def ticket_medio(self):
+        """
+        Retorna o valor médio gasto por venda
+        """
+
+        valor_total = self.__df['Valor Total'].sum()
+
+        total_transacoes = self.__df['Cod_Transacao'].nunique()
+
+        media = valor_total / total_transacoes
+
+        return f"R$ {media:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+    def total_transacoes(self):
+        """
+        Retorna a quantidade total de transações
+        """
+
+        resultado = self.__df['Cod_Transacao'].nunique()
+
+        return resultado
