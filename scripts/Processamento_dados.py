@@ -1,19 +1,16 @@
 from Dados import Dados
+from PipelineMetricas import PipelineMetricas
 
-
-#Local do arquivo bruto
+# Caminho dos dados brutos
 path = 'data_raw/dirty_cafe_sales.csv'
 
-#1. EXTRACT
+# 1. EXTRACT
 
-# Variável contendo o local do arquivo e o tipo do arquivo
-dados_compras = Dados(path,'csv')
-
+dados_compras = Dados(path, 'csv')
 dados_compras.qtde_registros()
 
-#2. TRANSFORM
+# 2. TRANSFORM
 
-#Mapeamento de tradução das colunas
 key_mapping = {
     'Transaction ID': 'Cod_Transacao',
     'Item': 'Produto',
@@ -25,7 +22,6 @@ key_mapping = {
     'Transaction Date': 'Data da Transação'
 }
 
-# Mapeamento de tradução dos valores das linhas
 value_mapping = {
     'In-store': 'Presencial',
     'Takeaway': 'Para viagem',
@@ -34,32 +30,15 @@ value_mapping = {
     'Cookie': 'Biscoito',
     'Salad': 'Salada',
     'Smoothie': 'Vitamina',
-    'Sandwich': 'Lanche',
+    'Sandwich': 'Sanduiche',
     'Credit Card': 'Cartão de Crédito',
     'Cash': 'Dinheiro',
     'Digital Wallet': 'Carteira Digital',
     'Juice': 'Suco',
     'Tea': 'Chá',
-    'Sandwich': 'Sanduiche',
     'Espresso': 'Expresso'
 }
 
-# Renomeia as colunas e imprime métricas do estado atualizado 
-dados_compras.rename_columns(key_mapping)
-print('\nColunas renomeadas')
-
-# Converte a data da transação para o padrão brasileiro
-dados_compras.format_dates('Data da Transação')
-
-# Renomeia os valores e imprime métricas do estado atualizado
-dados_compras.rename_values(value_mapping)
-
-# Convertendo colunas com valores inválidos para nulo
-dados_compras.clean_missing_values()
-
-print('Valores inválidos tratados')
-
-# Dicionário de tipos de dados
 cast_mapping = {
     'Cod_Transacao': 'string',
     'Produto': 'string',
@@ -71,51 +50,50 @@ cast_mapping = {
     'Data da Transação': 'datetime64[ns]'
 }
 
-# Convertendo os tipos de dados das colunas
+dados_compras.rename_columns(key_mapping)
+print('\nColunas renomeadas')
+
+
+dados_compras.format_dates('Data da Transação')
+dados_compras.rename_values(value_mapping)
+
+dados_compras.clean_missing_values()
+print('Valores inválidos tratados')
+
+
 dados_compras.cast_types(cast_mapping)
-
-# Localizando dados com Cod_Transacao duplicados.
 dados_compras.deduplicate()
-
-# Excluindo dados com Cod_Transacao duplicados.
 dados_compras.drop_deduplicate()
-
-# Removendo extras e deixando as informações em maiúsculo.
 dados_compras.standardize_text()
-
-# Ajustando o cálculo da coluna Valor Total
 dados_compras.tratamento_nulos_valor_total()
 
-print('Dados transformados')
+print('\nTransformações concluídas!')
 
-#3. MÉTRICAS
+# 3. EXPORTAÇÃO DOS DADOS TRATADOS
 
-dados_compras.valores_agrupados()
+dados_compras.salvando_dados_virgula('data_processed/dados_transformados_virgula.csv')
+dados_compras.salvando_dados_ponto_virgula('data_processed/dados_transformados_ponto_e_virgula.csv')
 
-dados_compras.faturamento_por_forma_de_pagamento()
+# 4. GERAÇÃO DAS MÉTRICAS E RELATÓRIOS
 
-dados_compras.ticket_medio()
+# Instancia o Pipeline de Métricas com o DataFrame tratado contido na classe Dados
+pipeline_metricas = PipelineMetricas(dados_compras.dados)
 
-dados_compras.faturamento_por_tipo_de_consumo()
+print('\nGerando relatórios de métricas...\n')
 
-dados_compras.analise_temporal_de_vendas()
+# PDF único com todas as métricas
+pipeline_metricas.exportar_pdf_totalizador('data_processed/metricas_consolidadas.pdf')
 
-print('Métricas calculadas')
+# PDFs individuais para cada métrica
+pipeline_metricas.exportar_pdfs_separados('data_processed/metricas_pdf')
 
-#4. LOAD
+# CSVs individuais para cada métrica
+pipeline_metricas.exportar_csvs_separados('data_processed/metricas_csv')
 
-# Local em que o arquivo tratado deve ser salvo
-path_dados_transformados = 'data_processed/dados_transformados_virgula.csv'
+# Excel único com todas as métricas
+pipeline_metricas.exportar_excel_totalizador('data_processed/metricas_todas_abas.xlsx')
 
-# Utilizando a função de salvamento de dados 
-dados_compras.salvando_dados_virgula(path_dados_transformados)
-
-path_dados_transformados = 'data_processed/dados_transformados_ponto_e_virgula.csv'
-
-dados_compras.salvando_dados_ponto_virgula(path_dados_transformados)
-
-print('\nPipeline executado com sucesso!')
-print('\nRelatórios salvos')
+print('\nPipeline de ETL e geração de métricas finalizado com sucesso!')
 
 print(f'\nFaturamento Total: {dados_compras.faturamento_total()}')
 print(f'Ticket médio: {dados_compras.ticket_medio()}')
