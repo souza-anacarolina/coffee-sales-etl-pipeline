@@ -116,6 +116,19 @@ class PipelineMetricas:
 
         return pd.DataFrame([{'Métrica': 'Média de itens por compra', 'Valor': resultado}])
 
+    def perc_nulos_por_coluna(self):
+            """
+            
+            """
+    
+            resultado = (self.__df.isna().mean() * 100).reset_index()
+    
+            resultado.columns = ['Coluna', 'Porcentagem Nulos']
+
+            resultado['Porcentagem Nulos'] = resultado['Porcentagem Nulos'].map(lambda x: f"{x:.2f}%")
+    
+            return resultado
+
     def obter_todas_metricas(self) -> dict:
         """
         Dicionário com o nome da métrica e o seu respectivo DataFrame.
@@ -129,8 +142,11 @@ class PipelineMetricas:
             'Total Transações': self.total_transacoes(),
             'Faturamento Por Tipo Consumo': self.faturamento_por_tipo_de_consumo(),
             'Análise Temporal': self.analise_temporal_de_vendas(),
-            'Média de Itens por Compra': self.media_itens_por_transacao()
+            'Média de Itens por Compra': self.media_itens_por_transacao(),
+            'Percentual de nulos por coluna': self.perc_nulos_por_coluna() 
         }
+
+    
 
     # =========================================================
     # GERAÇÃO E EXPORTAÇÃO DOS RELATÓRIOS
