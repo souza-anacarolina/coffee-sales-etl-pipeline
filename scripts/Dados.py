@@ -167,6 +167,13 @@ class Dados:
 
         self.__df.to_csv(path,index=False,encoding='utf-8-sig',sep=';',decimal=',',float_format='%.2f',date_format='%d/%m/%Y')
 
+    def salvando_dados_json(self,path):
+        """
+        Salva o DataFrame em um arquivo JSON
+        """
+
+        self.__df.to_json(path, orient='records', force_ascii=False, indent=4)
+
 
     # =========================================================
     # TRATAMENTO DE VALORES AUSENTES
