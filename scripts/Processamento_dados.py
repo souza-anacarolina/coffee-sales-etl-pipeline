@@ -7,7 +7,9 @@ path = 'data_raw/dirty_cafe_sales.csv'
 # 1. EXTRACT
 
 dados_compras = Dados(path, 'csv')
-dados_compras.qtde_registros()
+
+total_inicial = dados_compras.qtde_registros()
+print(f"\nRegistros brutos carregados: {total_inicial}")
 
 # 2. TRANSFORM
 
@@ -51,16 +53,9 @@ cast_mapping = {
 }
 
 dados_compras.rename_columns(key_mapping)
-print('\nColunas renomeadas')
-
-
 dados_compras.format_dates('Data da Transação')
 dados_compras.rename_values(value_mapping)
-
 dados_compras.clean_missing_values()
-print('Valores inválidos tratados')
-
-
 dados_compras.cast_types(cast_mapping)
 dados_compras.deduplicate()
 dados_compras.drop_deduplicate()
@@ -68,7 +63,13 @@ dados_compras.standardize_text()
 dados_compras.valores_padrao()
 dados_compras.tratar_datas_criticas()
 
+total_final = dados_compras.qtde_registros()
+descartados = total_inicial - total_final
+percentual_validos = (total_final / total_inicial) * 100
+
 print('\nTransformações concluídas!')
+print(f"   • Registros viáveis para uso: {total_final} ({percentual_validos:.1f}% do total)")
+print(f"   • Registros descartados/quarentena: {descartados}")
 
 # 3. EXPORTAÇÃO DOS DADOS TRATADOS
 

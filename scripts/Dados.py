@@ -75,7 +75,7 @@ class Dados:
         Retorna a quantidade de registros carregados
         """
 
-        print(f"\nDados carregados: {len(self.__df)} registros")
+        return len(self.__df)
 
     # =========================================================
     # TRANSFORMAÇÃO DOS DADOS
