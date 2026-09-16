@@ -248,4 +248,8 @@ class Dados:
         elif estrategia == 'sentinela':
             self.__df['Data da Transação'] = self.__df['Data da Transação'].fillna(pd.to_datetime('1900-01-01'))
 
-    
+    def remover_datas_nulas(self):
+        """
+        Remove do DataFrame os registros que possuem a Data da Transação como nula.
+        """
+        self.__df = self.__df.dropna(subset=['Data da Transação'])
