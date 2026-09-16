@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 from fpdf import FPDF
+from Dados import Dados
 
 
 class PipelineMetricas:
@@ -118,7 +119,7 @@ class PipelineMetricas:
 
     def perc_nulos_por_coluna(self):
             """
-            
+            Retorna o percentual de dados nulos de cada coluna do DataFrame
             """
     
             resultado = (self.__df.isna().mean() * 100).reset_index()
@@ -128,6 +129,19 @@ class PipelineMetricas:
             resultado['Porcentagem Nulos'] = resultado['Porcentagem Nulos'].map(lambda x: f"{x:.2f}%")
     
             return resultado
+
+    def cont_reg_duplicados(self):
+        """
+        Retorna um DataFrame com a contagem total de linhas duplicadas.
+        """
+        total_duplicados = self.__df.duplicated(subset=['Cod_Transacao']).sum()
+        
+        resultado = pd.DataFrame([{
+            'Métrica': 'Total de Registros Duplicados',
+            'Valor': total_duplicados
+        }])
+        
+        return resultado
 
     def obter_todas_metricas(self) -> dict:
         """
@@ -143,7 +157,8 @@ class PipelineMetricas:
             'Faturamento Por Tipo Consumo': self.faturamento_por_tipo_de_consumo(),
             'Análise Temporal': self.analise_temporal_de_vendas(),
             'Média de Itens por Compra': self.media_itens_por_transacao(),
-            'Percentual de nulos por coluna': self.perc_nulos_por_coluna() 
+            'Percentual de nulos por coluna': self.perc_nulos_por_coluna(),
+            'Contagem de registros duplicados': self.cont_reg_duplicados()
         }
 
     

@@ -65,7 +65,8 @@ dados_compras.cast_types(cast_mapping)
 dados_compras.deduplicate()
 dados_compras.drop_deduplicate()
 dados_compras.standardize_text()
-dados_compras.tratamento_nulos_valor_total()
+dados_compras.valores_padrao()
+dados_compras.tratar_datas_criticas()
 
 print('\nTransformações concluídas!')
 
