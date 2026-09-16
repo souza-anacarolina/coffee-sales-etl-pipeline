@@ -214,3 +214,38 @@ class Dados:
         calculo = quantidade * preco_unitario
 
         self.__df.loc[nulo,'Valor Total'] = calculo
+
+    def valores_padrao(self):
+        """
+        Define valores padrão para dados nulos
+        """
+
+
+        #Preenche valores nulos em 'Quantidade' e 'Preço Unitário' com 0
+        self.__df['Quantidade'] = self.__df['Quantidade'].fillna(0)
+        self.__df['Preço Unitário'] = self.__df['Preço Unitário'].fillna(0)
+
+        # Identifica onde 'Valor Total' está nulo
+        nulo = self.__df['Valor Total'].isna()
+
+        # Recalcula apenas onde 'Valor Total' é nulo
+        calculo = self.__df.loc[nulo, 'Quantidade'] * self.__df.loc[nulo, 'Preço Unitário']
+        self.__df.loc[nulo, 'Valor Total'] = calculo
+
+        # Garante que qualquer outro valor nulo residual em 'Valor Total' vire 0
+        self.__df['Valor Total'] = self.__df['Valor Total'].fillna(0)
+
+    def tratar_datas_nulas(self, estrategia='drop'):
+        """
+        Trata datas nulas na Camada Prata.
+        Estratégias suportadas: 'drop' (remove linhas), 'ffill' (propaga anterior), 'sentinela' (1900-01-01).
+        """
+        if estrategia == 'drop':
+            # Mantém apenas registros com datas válidas
+            self.__df = self.__df.dropna(subset=['Data da Transação'])
+        elif estrategia == 'ffill':
+            self.__df['Data da Transação'] = self.__df['Data da Transação'].ffill()
+        elif estrategia == 'sentinela':
+            self.__df['Data da Transação'] = self.__df['Data da Transação'].fillna(pd.to_datetime('1900-01-01'))
+
+    
