@@ -88,13 +88,6 @@ class Dados:
 
         self.__df.rename(columns=key_mapping,inplace=True)
 
-    def rename_values(self, value_mapping):
-        """
-        Substitui valores dentro do DataFrame.
-        """
-
-        self.__df.replace(value_mapping,inplace=True)
-
     def cast_types(self,cast_mapping):
             """
             Covertendo tipo de dados das colunas

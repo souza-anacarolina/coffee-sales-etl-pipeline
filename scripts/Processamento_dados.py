@@ -24,22 +24,6 @@ key_mapping = {
     'Transaction Date': 'Data da Transação'
 }
 
-value_mapping = {
-    'In-store': 'Presencial',
-    'Takeaway': 'Para viagem',
-    'Coffee': 'Café',
-    'Cake': 'Bolo',
-    'Cookie': 'Biscoito',
-    'Salad': 'Salada',
-    'Smoothie': 'Vitamina',
-    'Sandwich': 'Sanduiche',
-    'Credit Card': 'Cartão de Crédito',
-    'Cash': 'Dinheiro',
-    'Digital Wallet': 'Carteira Digital',
-    'Juice': 'Suco',
-    'Tea': 'Chá',
-    'Espresso': 'Expresso'
-}
 
 cast_mapping = {
     'Cod_Transacao': 'string',
@@ -54,7 +38,6 @@ cast_mapping = {
 
 dados_compras.rename_columns(key_mapping)
 dados_compras.format_dates('Data da Transação')
-dados_compras.rename_values(value_mapping)
 dados_compras.clean_missing_values()
 dados_compras.cast_types(cast_mapping)
 dados_compras.deduplicate()
