@@ -204,29 +204,52 @@ class Dados:
 
     def valores_padrao(self):
         """
-        Define valores padrão para dados nulos
+        Define valores padrão para dados nulos em campos descritivos (dimensões)
+        e deriva/marca valores ausentes em campos de medida (fatos).
         """
 
-        self.__df['Quantidade'] = self.__df['Quantidade'].fillna(0)
-        self.__df['Preço Unitário'] = self.__df['Preço Unitário'].fillna(0)
+        # --- Dimensões ---
+        self.__df['Produto'] = self.__df['Produto'].fillna('N/A')
+        self.__df['Forma de Pagamento'] = self.__df['Forma de Pagamento'].fillna('N/A')
+        self.__df['Tipo de Consumo'] = self.__df['Tipo de Consumo'].fillna('N/A')
 
-        nulo = self.__df['Valor Total'].isna()
+        # --- Garante a coluna de flag antes de usá-la ---
+        if 'valor_imputado' not in self.__df.columns:
+            self.__df['valor_imputado'] = False
 
-        calculo = self.__df.loc[nulo, 'Quantidade'] * self.__df.loc[nulo, 'Preço Unitário']
-        self.__df.loc[nulo, 'Valor Total'] = calculo
+        # --- Fatos: nunca preencher com 0 ---
+        total_nulo = self.__df['Valor Total'].isna()
+        quantidade_ok = self.__df['Quantidade'].notna()
+        preco_ok = self.__df['Preço Unitário'].notna()
 
-        self.__df['Valor Total'] = self.__df['Valor Total'].fillna(0)
+        # Caso 1: deriva quando possível
+        pode_derivar = total_nulo & quantidade_ok & preco_ok
+        self.__df.loc[pode_derivar, 'Valor Total'] = (
+            self.__df.loc[pode_derivar, 'Quantidade'] * self.__df.loc[pode_derivar, 'Preço Unitário']
+        )
 
-    def tratar_datas_criticas(self, salvar_quarentena=True, path_quarentena='data_processed/quarentena_datas.csv'):
+        # Caso 2: não derivável — Valor Total permanece NULL de propósito
+        nao_derivavel = total_nulo & ~pode_derivar
+        self.__df.loc[nao_derivavel, 'valor_imputado'] = True
+
+        # Caso 3: Quantidade ou Preço ausentes isoladamente
+        quantidade_nulo = self.__df['Quantidade'].isna()
+        preco_nulo = self.__df['Preço Unitário'].isna()
+        self.__df.loc[quantidade_nulo | preco_nulo, 'valor_imputado'] = True
+
+    def separar_quarentena(self):
         """
-        Identifica registros com data nula exporta para a quarentena e remove do fluxo principal.
+        Isola registros que comprometem a integridade do grão da tabela fato.
+        Estes não recebem valor padrão — vão para análise/reprocessamento.
         """
-        # 1. Identifica os registros sem data
-        invalidos = self.__df[self.__df['Data da Transação'].isna()]
-        
-        # 2. Salva em quarentena se houver erros
-        if salvar_quarentena and not invalidos.empty:
-            invalidos.to_csv(path_quarentena, index=False, encoding='utf-8-sig')
-        
-        # 3. Mantém apenas os registros válidos no pipeline principal
-        self.__df = self.__df.dropna(subset=['Data da Transação'])
+        self.__df['is_valid'] = True
+        self.__df['quality_issues'] = [[] for _ in range(len(self.__df))]
+
+        sem_data = self.__df['Data da Transação'].isna()
+        self.__df.loc[sem_data, 'is_valid'] = False
+        self.__df.loc[sem_data, 'quality_issues'] = self.__df.loc[sem_data, 'quality_issues'].apply(
+            lambda x: x + ['data_ausente']
+        )
+
+        self.__df_quarentena = self.__df[~self.__df['is_valid']].copy()
+        self.__df = self.__df[self.__df['is_valid']].copy()

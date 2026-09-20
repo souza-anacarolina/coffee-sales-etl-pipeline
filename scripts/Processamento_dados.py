@@ -61,7 +61,7 @@ dados_compras.deduplicate()
 dados_compras.drop_deduplicate()
 dados_compras.standardize_text()
 dados_compras.valores_padrao()
-dados_compras.tratar_datas_criticas()
+dados_compras.separar_quarentena()
 
 total_final = dados_compras.qtde_registros()
 descartados = total_inicial - total_final
