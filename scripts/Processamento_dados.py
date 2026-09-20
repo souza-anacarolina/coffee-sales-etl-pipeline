@@ -15,13 +15,20 @@ print(f"\nRegistros brutos carregados: {total_inicial}")
 
 key_mapping = {
     'Transaction ID': 'Cod_Transacao',
-    'Item': 'Produto',
+    'Transaction Date': 'Data da Transação',
+    'Transaction Time': 'Hora da Transação',
     'Quantity': 'Quantidade',
+    'store_id': 'Cod_Loja',
+    'store_location': 'Localizacao_Loja',
+    'product_id': 'Cod_Produto',
     'Price Per Unit': 'Preço Unitário',
+    'product_category': 'Categoria do Produto',
+    'product_type': 'Tipo do Produto',
+    'product_detail': 'Detalhe do Produto',
+    'Item': 'Produto',
     'Total Spent': 'Valor Total',
     'Payment Method': 'Forma de Pagamento',
-    'Location': 'Tipo de Consumo',
-    'Transaction Date': 'Data da Transação'
+     'Location': 'Tipo de Consumo'
 }
 
 
@@ -33,7 +40,14 @@ cast_mapping = {
     'Valor Total': 'Float64',
     'Forma de Pagamento': 'string',
     'Tipo de Consumo': 'string',
-    'Data da Transação': 'datetime64[ns]'
+    'Data da Transação': 'datetime64[ns]',
+    'Hora da Transação': 'datetime64[ns]',
+    'Cod_Loja': 'string',
+    'Localizacao_Loja': 'string',
+    'Cod_Produto': 'Int64',
+    'Categoria do Produto': 'string',
+    'Tipo do Produto': 'string',
+    'Detalhe do Produto': 'string'
 }
 
 dados_compras.rename_columns(key_mapping)
