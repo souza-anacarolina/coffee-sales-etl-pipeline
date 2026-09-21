@@ -80,20 +80,6 @@ class PipelineMetricas:
     # CÁLCULO DAS MÉTRICAS
     # =========================================================
 
-    
-
-    def valores_agrupados_id(self) -> pd.DataFrame:
-            """
-            Retorna o valor total e a quantidade agrupados por id de produto.
-            """
-    
-            resultado = self.__df.groupby('Cod_Produto').agg({'Quantidade': 'sum', 
-                                                          'Valor Total': 'sum'}).reset_index()
-    
-            resultado['Valor Total'] = resultado['Valor Total'].map(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
-    
-            return resultado
-
     def faturamento_total(self) -> pd.DataFrame:
         """
         Retorna o valor total de faturamento.
