@@ -44,6 +44,11 @@ class PipelineMetricas:
         """Verifica se uma coluna existe e tem ao menos um valor não nulo."""
         return coluna in self.__df.columns and self.__df[coluna].notna().any()
 
+    @staticmethod
+    def __aviso_indisponivel(motivo: str) -> pd.DataFrame:
+        """Retorna uma métrica 'vazia' com uma explicação, em vez de quebrar o pipeline."""
+        return pd.DataFrame([{'Aviso': motivo}])
+
     # =========================================================
     # CÁLCULO DAS MÉTRICAS
     # =========================================================
