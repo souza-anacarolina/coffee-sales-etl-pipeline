@@ -401,8 +401,8 @@ class PipelineMetricas:
             'Análise Temporal': self.analise_temporal_de_vendas(),
             'Vendas Por Faixa Horária': self.vendas_por_faixa_horaria(),
             'Média de Itens por Compra': self.media_itens_por_transacao(),
-            'Faturamento Por Forma Pagamento (Base Legado)': self.faturamento_por_forma_de_pagamento(),
-            'Faturamento Por Tipo Consumo (Base Legado)': self.faturamento_por_tipo_de_consumo(),
+            'Faturamento Por Forma Pagamento': self.faturamento_por_forma_de_pagamento(),
+            'Faturamento Por Tipo Consumo': self.faturamento_por_tipo_de_consumo(),
         }
 
     def obter_metricas_qualidade(self) -> dict:
