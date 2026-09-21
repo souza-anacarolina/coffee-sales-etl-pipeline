@@ -195,6 +195,38 @@ class PipelineMetricas:
         
         return resultado
 
+    # =========================================================
+    # MÉTRICAS DE NEGÓCIO 
+    # =========================================================
+
+    def faturamento_por_loja(self) -> pd.DataFrame:
+        """
+        Faturamento, quantidade de transações e ticket médio por loja.
+ 
+        Decisão de negócio que apoia: identificar as lojas de melhor e pior
+        desempenho — para replicar o que funciona bem em uma unidade, ou
+        investigar quedas de faturamento numa unidade específica.
+        """
+        if not self.__coluna_disponivel('Localizacao_Loja'):
+            return self.__aviso_indisponivel(
+                'Sem dados de loja disponíveis (coluna Localizacao_Loja ausente ou vazia).'
+            )
+ 
+        resultado = self.__df.groupby('Localizacao_Loja').agg(
+            **{
+                'Faturamento Total': ('Valor Total', 'sum'),
+                'Quantidade de Transações': ('Cod_Transacao', 'nunique'),
+            }
+        ).reset_index()
+ 
+        resultado['Ticket Médio'] = resultado['Faturamento Total'] / resultado['Quantidade de Transações']
+        resultado = resultado.sort_values('Faturamento Total', ascending=False).reset_index(drop=True)
+ 
+        resultado['Faturamento Total'] = self.__formatar_moeda(resultado['Faturamento Total'])
+        resultado['Ticket Médio'] = self.__formatar_moeda(resultado['Ticket Médio'])
+ 
+        return resultado.rename(columns={'Localizacao_Loja': 'Loja'})
+
     def obter_todas_metricas(self) -> dict:
         """
         Dicionário com o nome da métrica e o seu respectivo DataFrame.
@@ -211,7 +243,8 @@ class PipelineMetricas:
             'Média de Itens por Compra': self.media_itens_por_transacao(),
             'Percentual de nulos por coluna': self.perc_nulos_por_coluna(),
             'Contagem de registros duplicados': self.cont_reg_duplicados(),
-            'Faturamento Agrupado Por ID Produto': self.valores_agrupados_id()
+            'Faturamento Agrupado Por ID Produto': self.valores_agrupados_id(),
+            'Faturamento Por Loja': self.faturamento_por_loja()
         }
 
     
