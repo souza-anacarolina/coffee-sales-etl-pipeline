@@ -57,6 +57,25 @@ class PipelineMetricas:
         """Retorna uma métrica 'vazia' com uma explicação, em vez de quebrar o pipeline."""
         return pd.DataFrame([{'Aviso': motivo}])
 
+    def __linha_cobertura(self, coluna_categoria: str, coluna_grupo: str) -> dict:
+        """
+        Monta uma linha de rodapé indicando qual % do faturamento total uma
+        métrica agrupada por `coluna_grupo` de fato cobre. Usada nas
+        métricas que dependem de uma coluna disponível em apenas uma das
+        fontes de dados.
+        """
+        cobertos = self.__mascara_preenchida(self.__df[coluna_grupo])
+        faturamento_coberto = self.__df.loc[cobertos, 'Valor Total'].sum()
+        faturamento_total = self.__df['Valor Total'].sum()
+        pct = (faturamento_coberto / faturamento_total * 100) if faturamento_total else 0
+        return {
+            coluna_categoria: '[!] Cobertura desta métrica',
+            'Faturamento Total': (
+                f"{pct:.1f}% do faturamento total "
+                f"(dado disponível apenas na fonte legado)"
+            ),
+        }
+
     # =========================================================
     # CÁLCULO DAS MÉTRICAS
     # =========================================================
