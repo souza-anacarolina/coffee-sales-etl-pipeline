@@ -5,8 +5,28 @@ from fpdf import FPDF
 
 class PipelineMetricas:
 
-    def __init__(self, df: pd.DataFrame):
+    def __init__(
+            self, 
+            df: pd.DataFrame,
+            total_bruto: 'int | None' = None, 
+            qtde_quarentena: 'int | None' = None,
+            ):
+
+        """
+            Parameters
+            ----------
+            df:
+                DataFrame já tratado pelo pipeline de ETL.
+            total_bruto:
+                Opcional. Total de registros antes da separação em quarentena —
+                usado apenas por `indice_qualidade_dados()`. 
+            qtde_quarentena:
+                Opcional. Quantidade de registros isolados em quarentena.
+            """
+        
         self.__df = df
+        self.__total_bruto = total_bruto
+        self.__qtde_quarentena = qtde_quarentena
 
     @staticmethod
     def __formatar_valor_celula(nome_coluna: str, valor) -> str:
@@ -14,6 +34,11 @@ class PipelineMetricas:
         Formata células para exibição em PDF.
         """
         return str(valor)
+
+    @staticmethod
+    def __formatar_moeda(serie: pd.Series) -> pd.Series:
+        """Formata uma série numérica como moeda em padrão brasileiro (R$ 1.234,56)."""
+        return serie.map(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
 
     # =========================================================
     # CÁLCULO DAS MÉTRICAS
