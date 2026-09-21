@@ -257,6 +257,32 @@ class PipelineMetricas:
  
         return resultado
 
+    def ranking_produtos_mais_vendidos(self, top_n: int = 10) -> pd.DataFrame:
+        """
+        Top N produtos por quantidade vendida, com faturamento associado.
+ 
+        Decisão de negócio que apoia: priorização de estoque/insumos dos
+        produtos de maior giro, e identificação de candidatos a combo/
+        promoção cruzada com itens de menor saída.
+        """
+        coluna_produto = 'Detalhe do Produto' if self.__coluna_disponivel('Detalhe do Produto') else 'Produto'
+ 
+        if not self.__coluna_disponivel(coluna_produto):
+            return self.__aviso_indisponivel('Sem dados de produto disponíveis para ranquear.')
+ 
+        resultado = self.__df.groupby(coluna_produto).agg(
+            **{
+                'Quantidade Vendida': ('Quantidade', 'sum'),
+                'Faturamento Total': ('Valor Total', 'sum'),
+            }
+        ).reset_index()
+ 
+        resultado = resultado.sort_values('Quantidade Vendida', ascending=False).head(top_n).reset_index(drop=True)
+        resultado.insert(0, 'Ranking', range(1, len(resultado) + 1))
+        resultado['Faturamento Total'] = self.__formatar_moeda(resultado['Faturamento Total'])
+ 
+        return resultado.rename(columns={coluna_produto: 'Produto'})
+
     def obter_todas_metricas(self) -> dict:
         """
         Dicionário com o nome da métrica e o seu respectivo DataFrame.
