@@ -64,16 +64,20 @@ class PipelineMetricas:
         métricas que dependem de uma coluna disponível em apenas uma das
         fontes de dados.
         """
-        cobertos = self.__mascara_preenchida(self.__df[coluna_grupo])
-        faturamento_coberto = self.__df.loc[cobertos, 'Valor Total'].sum()
+        mascara = self.__mascara_preenchida(self.__df[coluna_grupo])
+        faturamento_coberto = self.__df.loc[mascara, 'Valor Total'].sum()
         faturamento_total = self.__df['Valor Total'].sum()
         pct = (faturamento_coberto / faturamento_total * 100) if faturamento_total else 0
+ 
+        if 'Origem' in self.__df.columns:
+            fontes = sorted(self.__df.loc[mascara, 'Origem'].dropna().unique())
+            descricao_fonte = f"disponível apenas em: {', '.join(fontes)}" if fontes else "fonte não identificada"
+        else:
+            descricao_fonte = "dado parcialmente preenchido"
+ 
         return {
             coluna_categoria: '[!] Cobertura desta métrica',
-            'Faturamento Total': (
-                f"{pct:.1f}% do faturamento total "
-                f"(dado disponível apenas na fonte legado)"
-            ),
+            'Faturamento Total': f"{pct:.1f}% do faturamento total ({descricao_fonte})",
         }
 
     # =========================================================
