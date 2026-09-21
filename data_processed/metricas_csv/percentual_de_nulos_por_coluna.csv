@@ -1,12 +1,20 @@
 ﻿Coluna;Porcentagem Nulos
 Cod_Transacao;0.00%
 Produto;0.00%
-Quantidade;4.75%
-Preço Unitário;5.30%
-Valor Total;0.41%
+Quantidade;0.29%
+Preço Unitário;0.32%
+Valor Total;0.02%
 Forma de Pagamento;0.00%
 Tipo de Consumo;0.00%
 Data da Transação;0.00%
+Origem;0.00%
+Hora da Transação;6.02%
+Cod_Loja;6.02%
+Localizacao_Loja;6.02%
+Cod_Produto;6.02%
+Categoria do Produto;6.02%
+Tipo do Produto;6.02%
+Detalhe do Produto;6.02%
 valor_imputado;0.00%
 is_valid;0.00%
 quality_issues;0.00%

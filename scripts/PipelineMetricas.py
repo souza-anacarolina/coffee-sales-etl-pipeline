@@ -1,13 +1,19 @@
 import os
 import pandas as pd
 from fpdf import FPDF
-from Dados import Dados
 
 
 class PipelineMetricas:
 
     def __init__(self, df: pd.DataFrame):
         self.__df = df
+
+    @staticmethod
+    def __formatar_valor_celula(nome_coluna: str, valor) -> str:
+        """
+        Formata células para exibição em PDF.
+        """
+        return str(valor)
 
     # =========================================================
     # CÁLCULO DAS MÉTRICAS
@@ -24,6 +30,18 @@ class PipelineMetricas:
         resultado['Valor Total'] = resultado['Valor Total'].map(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
 
         return resultado
+
+    def valores_agrupados_id(self) -> pd.DataFrame:
+            """
+            Retorna o valor total e a quantidade agrupados por id de produto.
+            """
+    
+            resultado = self.__df.groupby('Cod_Produto').agg({'Quantidade': 'sum', 
+                                                          'Valor Total': 'sum'}).reset_index()
+    
+            resultado['Valor Total'] = resultado['Valor Total'].map(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+    
+            return resultado
 
     def faturamento_total(self) -> pd.DataFrame:
         """
@@ -134,7 +152,7 @@ class PipelineMetricas:
         """
         Retorna um DataFrame com a contagem total de linhas duplicadas.
         """
-        total_duplicados = self.__df.duplicated(subset=['Cod_Transacao']).sum()
+        total_duplicados = self.__df.duplicated(subset=['Cod_Transacao', 'Origem', 'Produto']).sum()
         
         resultado = pd.DataFrame([{
             'Métrica': 'Total de Registros Duplicados',
@@ -158,7 +176,8 @@ class PipelineMetricas:
             'Análise Temporal': self.analise_temporal_de_vendas(),
             'Média de Itens por Compra': self.media_itens_por_transacao(),
             'Percentual de nulos por coluna': self.perc_nulos_por_coluna(),
-            'Contagem de registros duplicados': self.cont_reg_duplicados()
+            'Contagem de registros duplicados': self.cont_reg_duplicados(),
+            'Faturamento Agrupado Por ID Produto': self.valores_agrupados_id()
         }
 
     
@@ -227,9 +246,8 @@ class PipelineMetricas:
 
                 for _, row in df.iterrows():
                     data_row = table.row()
-                    for val in row:
-                        val_str = f"R$ {val:,.2f}" if isinstance(val, (float, int)) and 'Valor' in str(val) else str(val)
-                        data_row.cell(val_str)
+                    for coluna, val in row.items():
+                        data_row.cell(self.__formatar_valor_celula(coluna, val))
 
             pdf.output(path)
         print(f"PDFs individuais salvos em: {pasta_destino}")
@@ -263,9 +281,8 @@ class PipelineMetricas:
 
                 for _, row in df.iterrows():
                     data_row = table.row()
-                    for val in row:
-                        val_str = f"R$ {val:,.2f}" if isinstance(val, (float, int)) and 'Valor' in str(val) else str(val)
-                        data_row.cell(val_str)
+                    for coluna, val in row.items():
+                        data_row.cell(self.__formatar_valor_celula(coluna, val))
 
             pdf.ln(8)
 
