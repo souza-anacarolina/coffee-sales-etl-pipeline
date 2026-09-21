@@ -40,6 +40,10 @@ class PipelineMetricas:
         """Formata uma série numérica como moeda em padrão brasileiro (R$ 1.234,56)."""
         return serie.map(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
 
+    def __coluna_disponivel(self, coluna: str) -> bool:
+        """Verifica se uma coluna existe e tem ao menos um valor não nulo."""
+        return coluna in self.__df.columns and self.__df[coluna].notna().any()
+
     # =========================================================
     # CÁLCULO DAS MÉTRICAS
     # =========================================================
