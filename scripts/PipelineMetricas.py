@@ -227,6 +227,36 @@ class PipelineMetricas:
  
         return resultado.rename(columns={'Localizacao_Loja': 'Loja'})
 
+    def faturamento_por_categoria_produto(self) -> pd.DataFrame:
+        """
+        Faturamento e quantidade vendida por categoria de produto ordenado do maior para o menor.
+ 
+        Decisão de negócio que apoia: definir o mix de produtos a priorizar
+        em compras/estoque e em promoções, e identificar categorias com
+        baixa representatividade que podem ser descontinuadas.
+        """
+        if not self.__coluna_disponivel('Categoria do Produto'):
+            return self.__aviso_indisponivel(
+                'Sem dados de categoria de produto disponíveis '
+                '(coluna Categoria do Produto ausente ou vazia).'
+            )
+ 
+        resultado = self.__df.groupby('Categoria do Produto').agg(
+            **{
+                'Faturamento Total': ('Valor Total', 'sum'),
+                'Quantidade Vendida': ('Quantidade', 'sum'),
+            }
+        ).reset_index()
+ 
+        total_geral = resultado['Faturamento Total'].sum()
+        resultado['% do Faturamento'] = (resultado['Faturamento Total'] / total_geral * 100).round(1)
+        resultado = resultado.sort_values('Faturamento Total', ascending=False).reset_index(drop=True)
+ 
+        resultado['Faturamento Total'] = self.__formatar_moeda(resultado['Faturamento Total'])
+        resultado['% do Faturamento'] = resultado['% do Faturamento'].map(lambda x: f"{x:.1f}%")
+ 
+        return resultado
+
     def obter_todas_metricas(self) -> dict:
         """
         Dicionário com o nome da métrica e o seu respectivo DataFrame.
