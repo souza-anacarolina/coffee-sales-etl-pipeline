@@ -382,6 +382,25 @@ class PipelineMetricas:
  
         return pd.DataFrame(linhas)
 
+    def obter_metricas_negocio(self) -> dict:
+        """
+        Métricas voltadas para decisão de negócio: faturamento, produto,
+        loja, horário. Público-alvo: gestores e áreas de negócio.
+        """
+        return {
+            'Faturamento Total': self.faturamento_total(),
+            'Ticket Médio': self.ticket_medio(),
+            'Total Transações': self.total_transacoes(),
+            'Faturamento Por Loja': self.faturamento_por_loja(),
+            'Faturamento Por Categoria de Produto': self.faturamento_por_categoria_produto(),
+            'Ranking de Produtos Mais Vendidos': self.ranking_produtos_mais_vendidos(),
+            'Análise Temporal': self.analise_temporal_de_vendas(),
+            'Vendas Por Faixa Horária': self.vendas_por_faixa_horaria(),
+            'Média de Itens por Compra': self.media_itens_por_transacao(),
+            'Faturamento Por Forma Pagamento (Base Legado)': self.faturamento_por_forma_de_pagamento(),
+            'Faturamento Por Tipo Consumo (Base Legado)': self.faturamento_por_tipo_de_consumo(),
+        }
+
     def obter_todas_metricas(self) -> dict:
         """
         Dicionário com o nome da métrica e o seu respectivo DataFrame.
