@@ -404,8 +404,7 @@ class PipelineMetricas:
     def obter_metricas_qualidade(self) -> dict:
         """
         Métricas de observabilidade do pipeline de dados. Público-alvo: o
-        time de dados/engenharia — não pertencem a um relatório de negócio,
-        pois não ajudam diretamente uma decisão de loja/produto/horário.
+        time de dados/engenharia
         """
         return {
             'Índice de Qualidade dos Dados': self.indice_qualidade_dados(),
@@ -415,24 +414,10 @@ class PipelineMetricas:
 
     def obter_todas_metricas(self) -> dict:
         """
-        Dicionário com o nome da métrica e o seu respectivo DataFrame.
+        Combina métricas de negócio e de qualidade em um só dicionário.
+        Uso interno/depuração.
         """
-
-        return {
-            'Faturamento Agrupado Por Produto': self.valores_agrupados(),
-            'Faturamento Total': self.faturamento_total(),
-            'Faturamento Por Forma Pagamento': self.faturamento_por_forma_de_pagamento(),
-            'Ticket Médio': self.ticket_medio(),
-            'Total Transações': self.total_transacoes(),
-            'Faturamento Por Tipo Consumo': self.faturamento_por_tipo_de_consumo(),
-            'Análise Temporal': self.analise_temporal_de_vendas(),
-            'Média de Itens por Compra': self.media_itens_por_transacao(),
-            'Percentual de nulos por coluna': self.perc_nulos_por_coluna(),
-            'Contagem de registros duplicados': self.cont_reg_duplicados(),
-            'Faturamento Agrupado Por ID Produto': self.valores_agrupados_id(),
-            'Faturamento Por Loja': self.faturamento_por_loja()
-        }
-
+        return {**self.obter_metricas_negocio(), **self.obter_metricas_qualidade()}
     
 
     # =========================================================
