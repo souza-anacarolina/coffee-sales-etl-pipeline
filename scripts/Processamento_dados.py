@@ -1,5 +1,6 @@
 """
-Para adicionar uma nova fonte de dados não é necessário alterar este arquivo — basta incluir a entrada em `config_etl.FONTES_DADOS`.
+Para adicionar uma nova fonte  não é necessário alterar este arquivo — basta incluir a entrada
+em `config_etl.FONTES_DADOS`.
 """
 
 import logging
@@ -27,7 +28,8 @@ def transformar(dados_combinados: Dados) -> Dados:
     return (
         dados_combinados
         .rename_columns(MAPEAMENTO_COLUNAS)
-        .format_dates('Data da Transação'))
+        .format_dates('Data da Transação')
+    )
 
 
 def main():
@@ -35,6 +37,7 @@ def main():
     fontes = extrair_fontes(FONTES_DADOS)
     total_por_fonte = {origem: d.qtde_registros() for origem, d in fontes.items()}
 
+    # A coluna 'Origem' é adicionada para rastrear a procedência de cada linha.
     dados_compras = Dados.unir_fontes(fontes)
     total_inicial = dados_compras.qtde_registros()
 
@@ -46,8 +49,8 @@ def main():
     dados_compras.clean_missing_values()
     dados_compras.cast_types(MAPEAMENTO_TIPOS)
 
-    # Deduplicação: chave de negócio é Cod_Transacao + Origem + Produto. 
-    dados_compras.drop_deduplicate(subset=['Cod_Transacao', 'Origem', 'Produto'])
+    # Deduplicação: chave de negócio é Cod_Transacao + Produto + Origem — 
+    dados_compras.drop_deduplicate(subset=['Cod_Transacao', 'Produto', 'Origem'])
     dados_compras.standardize_text()
     dados_compras.valores_padrao()
     dados_compras.separar_quarentena()
@@ -67,16 +70,37 @@ def main():
 
     if not dados_compras.dados_quarentena.empty:
         Dados(df=dados_compras.dados_quarentena).salvando_dados_virgula(
-            'data_processed/quarentena_datas.csv')
+            'data_processed/quarentena_datas.csv'
+        )
 
     # 4. GERAÇÃO DAS MÉTRICAS E RELATÓRIOS
-    pipeline_metricas = PipelineMetricas(dados_compras.dados)
+    pipeline_metricas = PipelineMetricas(
+        dados_compras.dados,
+        total_bruto=total_inicial,
+        qtde_quarentena=len(dados_compras.dados_quarentena),
+    )
 
-    print('\nGerando relatórios de métricas...\n')
-    pipeline_metricas.exportar_pdf_totalizador('data_processed/metricas_consolidadas.pdf')
-    pipeline_metricas.exportar_pdfs_separados('data_processed/metricas_pdf')
-    pipeline_metricas.exportar_csvs_separados('data_processed/metricas_csv')
-    pipeline_metricas.exportar_excel_totalizador('data_processed/metricas_consolidadas.xlsx')
+    metricas_negocio = pipeline_metricas.obter_metricas_negocio()
+    metricas_qualidade = pipeline_metricas.obter_metricas_qualidade()
+
+    print('\nGerando relatório de negócio...\n')
+    pipeline_metricas.exportar_pdf_totalizador(
+        'data_processed/relatorio_negocio.pdf',
+        titulo='Relatório de Negócio',
+        metricas=metricas_negocio,
+    )
+    pipeline_metricas.exportar_pdfs_separados('data_processed/metricas_pdf/negocio', metricas=metricas_negocio)
+    pipeline_metricas.exportar_csvs_separados('data_processed/metricas_csv/negocio', metricas=metricas_negocio)
+    pipeline_metricas.exportar_excel_totalizador('data_processed/relatorio_negocio.xlsx', metricas=metricas_negocio)
+
+    print('\nGerando relatório de qualidade de dados...\n')
+    pipeline_metricas.exportar_pdf_totalizador(
+        'data_processed/relatorio_qualidade_dados.pdf',
+        titulo='Relatório de Qualidade de Dados',
+        metricas=metricas_qualidade,
+    )
+    pipeline_metricas.exportar_csvs_separados('data_processed/metricas_csv/qualidade', metricas=metricas_qualidade)
+    pipeline_metricas.exportar_excel_totalizador('data_processed/relatorio_qualidade_dados.xlsx', metricas=metricas_qualidade)
 
     print('\nPipeline de ETL e geração de métricas finalizado com sucesso!')
 

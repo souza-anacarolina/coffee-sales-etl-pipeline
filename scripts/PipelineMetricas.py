@@ -506,7 +506,7 @@ class PipelineMetricas:
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Helvetica", style="B", size=16)
-        pdf.cell(0, 10, "Relatório Geral de Métricas", new_x="LMARGIN", new_y="NEXT", align="C")
+        pdf.cell(0, 10, titulo, new_x="LMARGIN", new_y="NEXT", align="C")
         pdf.ln(10)
 
         for nome, df in metricas.items():

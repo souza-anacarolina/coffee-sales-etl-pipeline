@@ -1,0 +1,5 @@
+﻿Forma de Pagamento;Faturamento Total;Quantidade de Transações
+CASH;R$ 19.512,50;2161,0
+CREDIT CARD;R$ 19.466,00;2172,0
+DIGITAL WALLET;R$ 19.514,50;2198,0
+[!] Cobertura desta métrica;7.5% do faturamento total (disponível apenas em: CSV_DIRTY_CAFE_SALES);
