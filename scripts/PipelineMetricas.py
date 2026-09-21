@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 import pandas as pd
 from fpdf import FPDF
 
@@ -39,6 +40,13 @@ class PipelineMetricas:
     def __formatar_moeda(serie: pd.Series) -> pd.Series:
         """Formata uma série numérica como moeda em padrão brasileiro (R$ 1.234,56)."""
         return serie.map(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+
+    def __mascara_preenchida(self, coluna: pd.Series) -> pd.Series:
+        """
+        Retorna a máscara de valores genuinamente preenchidos em uma coluna
+        de dimensão 
+        """
+        return coluna.notna() & (coluna != 'N/A')
 
     def __coluna_disponivel(self, coluna: str) -> bool:
         """Verifica se uma coluna existe e tem ao menos um valor não nulo."""
