@@ -140,13 +140,24 @@ class PipelineMetricas:
         Retorna a proporção do faturamento entre os tipos de consumo.
         """
 
-        resultado = self.__df.groupby('Tipo de Consumo').agg({'Valor Total': 'sum', 
-                                                              'Cod_Transacao': 'count'}).rename(columns={'Valor Total': 'Faturamento Total', 
-                                                                                                         'Cod_Transacao': 'Quantidade de Transações'}).reset_index()
-
-        resultado['Faturamento Total'] = resultado['Faturamento Total'].map(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
-
-        return resultado
+        if not self.__coluna_disponivel('Tipo de Consumo'):
+            return self.__aviso_indisponivel(
+                'Sem dados de tipo de consumo disponíveis (coluna Tipo de Consumo ausente ou vazia).'
+            )
+ 
+        df_filtrado = self.__df[self.__mascara_preenchida(self.__df['Tipo de Consumo'])]
+ 
+        resultado = df_filtrado.groupby('Tipo de Consumo').agg(
+            **{
+                'Faturamento Total': ('Valor Total', 'sum'),
+                'Quantidade de Transações': ('Cod_Transacao', 'count'),
+            }
+        ).reset_index()
+ 
+        resultado['Faturamento Total'] = self.__formatar_moeda(resultado['Faturamento Total'])
+ 
+        linha_cobertura = self.__linha_cobertura('Tipo de Consumo', 'Tipo de Consumo')
+        return pd.concat([resultado, pd.DataFrame([linha_cobertura])], ignore_index=True)
 
     def analise_temporal_de_vendas(self) -> pd.DataFrame:
         """
