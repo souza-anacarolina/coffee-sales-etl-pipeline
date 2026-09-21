@@ -314,6 +314,49 @@ class PipelineMetricas:
  
         return resultado.reset_index(drop=True)
 
+    def indice_qualidade_dados(self) -> pd.DataFrame:
+        """
+        Indicadores sobre a confiabilidade dos dados usados nas demais
+        métricas: quanto foi descartado em quarentena, quanto teve valor
+        derivado/imputado em vez de vindo diretamente da fonte, e a
+        participação de cada fonte de dados no total.
+ 
+        Decisão de negócio que apoia: dimensionar o quanto confiar nos
+        números acima antes de agir sobre eles — e, do lado de engenharia,
+        apontar onde vale investir para melhorar a captura de dados na
+        origem (ex.: uma fonte com muito valor imputado tem um problema de
+        qualidade que vale corrigir antes da próxima carga).
+        """
+        linhas = []
+ 
+        if self.__total_bruto:
+            qtde_quarentena = self.__qtde_quarentena or 0
+            pct_quarentena = qtde_quarentena / self.__total_bruto * 100
+            linhas.append({
+                'Indicador': 'Registros descartados em quarentena',
+                'Valor': f"{qtde_quarentena} ({pct_quarentena:.2f}% do total bruto)",
+            })
+ 
+        if 'valor_imputado' in self.__df.columns:
+            pct_imputado = self.__df['valor_imputado'].mean() * 100
+            linhas.append({
+                'Indicador': 'Registros com Valor Total imputado/derivado',
+                'Valor': f"{pct_imputado:.2f}%",
+            })
+ 
+        if 'Origem' in self.__df.columns:
+            participacao = self.__df['Origem'].value_counts(normalize=True).mul(100).round(2)
+            for origem, pct in participacao.items():
+                linhas.append({'Indicador': f'Participação da fonte "{origem}"', 'Valor': f"{pct:.2f}%"})
+ 
+        if not linhas:
+            return self.__aviso_indisponivel(
+                'Sem informações de qualidade disponíveis (instancie PipelineMetricas '
+                'com total_bruto/qtde_quarentena para o indicador de quarentena).'
+            )
+ 
+        return pd.DataFrame(linhas)
+
     def obter_todas_metricas(self) -> dict:
         """
         Dicionário com o nome da métrica e o seu respectivo DataFrame.
