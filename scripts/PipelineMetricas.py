@@ -283,6 +283,37 @@ class PipelineMetricas:
  
         return resultado.rename(columns={coluna_produto: 'Produto'})
 
+    def vendas_por_faixa_horaria(self) -> pd.DataFrame:
+        """
+        Faturamento e quantidade de transações por hora do dia.
+ 
+        Decisão de negócio que apoia: dimensionamento de equipe por horário
+        de pico, definição de horário de funcionamento e janelas ideais
+        para promoções fora do horário de pico.
+        """
+        if not self.__coluna_disponivel('Hora da Transação'):
+            return self.__aviso_indisponivel(
+                'Sem dados de horário disponíveis (coluna Hora da Transação ausente ou vazia).'
+            )
+ 
+        df_temp = self.__df.copy()
+        df_temp['Hora'] = pd.to_datetime(
+            df_temp['Hora da Transação'], format='%H:%M:%S', errors='coerce'
+        ).dt.hour
+        df_temp = df_temp.dropna(subset=['Hora'])
+ 
+        resultado = df_temp.groupby('Hora').agg(
+            **{
+                'Faturamento Total': ('Valor Total', 'sum'),
+                'Quantidade de Transações': ('Cod_Transacao', 'nunique'),
+            }
+        ).reset_index().sort_values('Hora')
+ 
+        resultado['Hora'] = resultado['Hora'].astype(int).map(lambda h: f"{h:02d}h")
+        resultado['Faturamento Total'] = self.__formatar_moeda(resultado['Faturamento Total'])
+ 
+        return resultado.reset_index(drop=True)
+
     def obter_todas_metricas(self) -> dict:
         """
         Dicionário com o nome da métrica e o seu respectivo DataFrame.
