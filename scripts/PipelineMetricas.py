@@ -434,7 +434,7 @@ class PipelineMetricas:
         """
 
         os.makedirs(pasta_destino, exist_ok=True)
-        metricas = self.obter_metricas_negocio() if self.obter_metricas_negocio() is not None else self.obter_todas_metricas()
+        metricas = metricas if metricas is not None else self.obter_todas_metricas()
 
         for nome, df in metricas.items():
             nome_arquivo = nome.lower().replace(' ', '_').replace('á', 'a').replace('é', 'e').replace('í', 'i').replace('ó', 'o')
@@ -449,7 +449,7 @@ class PipelineMetricas:
         """
 
         os.makedirs(os.path.dirname(path_arquivo), exist_ok=True)
-        metricas = self.obter_metricas_negocio() if self.obter_metricas_negocio() is not None else self.obter_todas_metricas()
+        metricas = metricas if metricas is not None else self.obter_todas_metricas()
 
         with pd.ExcelWriter(path_arquivo, engine='openpyxl') as writer:
             for nome_aba, df in metricas.items():
@@ -463,7 +463,7 @@ class PipelineMetricas:
         """
 
         os.makedirs(pasta_destino, exist_ok=True)
-        metricas = self.obter_metricas_negocio() if self.obter_metricas_negocio() is not None else self.obter_todas_metricas()
+        metricas = metricas if metricas is not None else self.obter_todas_metricas()
 
         for nome, df in metricas.items():
 
@@ -501,7 +501,7 @@ class PipelineMetricas:
         """
 
         os.makedirs(os.path.dirname(path_arquivo), exist_ok=True )
-        metricas = self.obter_metricas_negocio() if self.obter_metricas_negocio() is not None else self.obter_todas_metricas()
+        metricas = metricas if metricas is not None else self.obter_todas_metricas()
 
         pdf = FPDF()
         pdf.add_page()
