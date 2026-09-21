@@ -401,6 +401,18 @@ class PipelineMetricas:
             'Faturamento Por Tipo Consumo (Base Legado)': self.faturamento_por_tipo_de_consumo(),
         }
 
+    def obter_metricas_qualidade(self) -> dict:
+        """
+        Métricas de observabilidade do pipeline de dados. Público-alvo: o
+        time de dados/engenharia — não pertencem a um relatório de negócio,
+        pois não ajudam diretamente uma decisão de loja/produto/horário.
+        """
+        return {
+            'Índice de Qualidade dos Dados': self.indice_qualidade_dados(),
+            'Percentual de Nulos por Coluna': self.perc_nulos_por_coluna(),
+            'Contagem de Registros Duplicados': self.cont_reg_duplicados(),
+        }
+
     def obter_todas_metricas(self) -> dict:
         """
         Dicionário com o nome da métrica e o seu respectivo DataFrame.
