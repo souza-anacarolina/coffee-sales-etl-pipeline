@@ -94,13 +94,24 @@ class PipelineMetricas:
         Retorna o total gasto e quantidade por forma de pagamento.
         """
 
-        resultado = self.__df.groupby('Forma de Pagamento').agg({'Valor Total': 'sum', 
-                                                                 'Cod_Transacao': 'count'}).rename(columns={'Valor Total': 'Faturamento Total', 
-                                                                                                            'Cod_Transacao': 'Quantidade de Transações'}).reset_index()
-
-        resultado['Faturamento Total'] = resultado['Faturamento Total'].map(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
-
-        return resultado
+        if not self.__coluna_disponivel('Forma de Pagamento'):
+            return self.__aviso_indisponivel(
+                'Sem dados de forma de pagamento disponíveis (coluna Forma de Pagamento ausente ou vazia).'
+            )
+ 
+        df_filtrado = self.__df[self.__mascara_preenchida(self.__df['Forma de Pagamento'])]
+ 
+        resultado = df_filtrado.groupby('Forma de Pagamento').agg(
+            **{
+                'Faturamento Total': ('Valor Total', 'sum'),
+                'Quantidade de Transações': ('Cod_Transacao', 'count'),
+            }
+        ).reset_index()
+ 
+        resultado['Faturamento Total'] = self.__formatar_moeda(resultado['Faturamento Total'])
+ 
+        linha_cobertura = self.__linha_cobertura('Forma de Pagamento', 'Forma de Pagamento')
+        return pd.concat([resultado, pd.DataFrame([linha_cobertura])], ignore_index=True)
 
     def ticket_medio(self) -> pd.DataFrame:
         """
