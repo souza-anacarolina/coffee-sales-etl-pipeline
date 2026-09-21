@@ -424,13 +424,13 @@ class PipelineMetricas:
     # GERAÇÃO E EXPORTAÇÃO DOS RELATÓRIOS
     # =========================================================
 
-    def exportar_csvs_separados(self, pasta_destino: str):
+    def exportar_csvs_separados(self, pasta_destino: str, metricas: Optional[dict] = None):
         """
         Gera um arquivo CSV individual para cada métrica.
         """
 
         os.makedirs(pasta_destino, exist_ok=True)
-        metricas = self.obter_todas_metricas()
+        metricas = self.obter_metricas_negocio() if self.obter_metricas_negocio() is not None else self.obter_todas_metricas()
 
         for nome, df in metricas.items():
             nome_arquivo = nome.lower().replace(' ', '_').replace('á', 'a').replace('é', 'e').replace('í', 'i').replace('ó', 'o')
@@ -439,13 +439,13 @@ class PipelineMetricas:
 
         print(f"CSVs individuais salvos em: {pasta_destino}")
 
-    def exportar_excel_totalizador(self, path_arquivo: str):
+    def exportar_excel_totalizador(self, path_arquivo: str, metricas: Optional[dict] = None):
         """
         Gera um arquivo Excel (.xlsx) onde cada aba corresponde a uma métrica.
         """
 
         os.makedirs(os.path.dirname(path_arquivo), exist_ok=True)
-        metricas = self.obter_todas_metricas()
+        metricas = self.obter_metricas_negocio() if self.obter_metricas_negocio() is not None else self.obter_todas_metricas()
 
         with pd.ExcelWriter(path_arquivo, engine='openpyxl') as writer:
             for nome_aba, df in metricas.items():
@@ -453,13 +453,13 @@ class PipelineMetricas:
 
         print(f"Arquivo Excel com todas as métricas salvo em: {path_arquivo}")
 
-    def exportar_pdfs_separados(self, pasta_destino: str):
+    def exportar_pdfs_separados(self, pasta_destino: str, metricas: Optional[dict] = None):
         """
         Gera um arquivo PDF individual para cada métrica.
         """
 
         os.makedirs(pasta_destino, exist_ok=True)
-        metricas = self.obter_todas_metricas()
+        metricas = self.obter_metricas_negocio() if self.obter_metricas_negocio() is not None else self.obter_todas_metricas()
 
         for nome, df in metricas.items():
 
@@ -490,13 +490,14 @@ class PipelineMetricas:
             pdf.output(path)
         print(f"PDFs individuais salvos em: {pasta_destino}")
 
-    def exportar_pdf_totalizador(self, path_arquivo: str):
+    def exportar_pdf_totalizador(self, path_arquivo: str, titulo: str = "Relatório Geral de Métricas",
+        metricas: Optional[dict] = None,):
         """
         Gera um único PDF com todas as métricas separadas por títulos.
         """
 
-        os.makedirs(os.path.dirname(path_arquivo), exist_ok=True)
-        metricas = self.obter_todas_metricas()
+        os.makedirs(os.path.dirname(path_arquivo), exist_ok=True )
+        metricas = self.obter_metricas_negocio() if self.obter_metricas_negocio() is not None else self.obter_todas_metricas()
 
         pdf = FPDF()
         pdf.add_page()
